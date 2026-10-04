@@ -300,7 +300,6 @@ chips('#parking', 'parking', ['敷地内に駐車可', '近隣コインパーキ
 
 // ===== 経路（どこから来た予約か）：URLから自動で入れる。お客様には入力させない =====
 //   ?ref=紹介コード（90日このブラウザに保存） ?utm_source= ?utm_medium= ?utm_campaign=（広告・チラシQRなど）
-//   storeCode は config.js の STORE_CODE
 const code = (s, max = 40) => String(s || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, max);
 const params = new URLSearchParams(location.search);
 const store = {
@@ -312,7 +311,6 @@ if (code(params.get('ref'))) store.set('zc_ref', code(params.get('ref')), 90);
 const route = () => ({
   ref: store.get('zc_ref'),
   utm_source: store.get('zc_utm_source'), utm_medium: store.get('zc_utm_medium'), utm_campaign: store.get('zc_utm_campaign'),
-  storeCode: code(CFG.STORE_CODE, 20),
 });
 if (route().ref) form.referral.value = route().ref;
 // 二重送信防止：このページで1回の予約につき1つの番号（同じ番号の送信はGAS側で1件にまとめる）
