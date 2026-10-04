@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ハウスクリーニング ご予約フォーム｜ジグラットクリーン</title>
+<meta name="description" content="エアコン・水回り・床のハウスクリーニング。メニューを選ぶとその場で概算金額がわかります。税込・出張費込み。">
+<style>
+  :root {
+    --main: #0f766e; --main-dark: #0b5a54; --accent: #f59e0b; --bg: #f5f7f6; --card: #fff;
+    --text: #1f2933; --sub: #6b7280; --line: #e5e7eb; --danger: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; line-height: 1.6; padding-bottom: 96px; }
+  header { background: var(--main); color: #fff; padding: 28px 16px 22px; text-align: center; }
+  header .badge { display: inline-block; background: #fff; color: var(--main); font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 999px; }
+  header h1 { margin: 10px 0 6px; font-size: 22px; }
+  header p { margin: 0; font-size: 13px; opacity: .9; }
+  .points { display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .points span { font-size: 12px; background: rgba(255,255,255,.15); padding: 3px 10px; border-radius: 6px; }
+  main { max-width: 720px; margin: 0 auto; padding: 16px; }
+  .card { background: var(--card); border-radius: 14px; padding: 18px 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  h2 { font-size: 17px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  h2 .num { background: var(--main); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 14px; }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; margin: 0 -4px 10px; padding: 0 4px; }
+  .tabs button { flex: none; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer; color: var(--text); }
+  .tabs button.on { background: var(--main); border-color: var(--main); color: #fff; }
+  .tabs button .cnt { background: var(--accent); color: #fff; border-radius: 999px; padding: 0 6px; margin-left: 4px; font-size: 11px; }
+  .item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .item:first-child { border-top: 0; }
+  .item .name { font-weight: 600; font-size: 15px; }
+  .item .price { color: var(--main); font-weight: 700; font-size: 14px; }
+  .item .note { color: var(--sub); font-size: 12px; }
+  .stepper { display: flex; align-items: center; gap: 6px; flex: none; }
+  .stepper button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--main); background: #fff; color: var(--main); font-size: 18px; cursor: pointer; line-height: 1; }
+  .stepper button.plus { background: var(--main); color: #fff; }
+  .stepper button:disabled { opacity: .3; cursor: not-allowed; }
+  .stepper input { width: 46px; text-align: center; font-size: 16px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 0; }
+  .selected { background: #ecfdf5; border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 8px; }
+  .selected:empty { display: none; }
+  label.f { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
+  .req, .opt { font-size: 11px; color: #fff; background: var(--danger); border-radius: 4px; padding: 1px 6px; margin-left: 6px; font-weight: 400; }
+  .opt { background: #9ca3af; }
+  input[type=text], input[type=tel], input[type=email], input[type=date], select, textarea {
+    width: 100%; font-size: 16px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; color: var(--text); font-family: inherit; }
+  textarea { min-height: 90px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips label { border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 12px; font-size: 14px; cursor: pointer; background: #fff; }
+  .chips input { margin-right: 6px; }
+  .chips label:has(input:checked) { border-color: var(--main); background: #ecfdf5; }
+  .hint { font-size: 12px; color: var(--sub); margin-top: 4px; }
+  .err { color: var(--danger); font-size: 13px; margin-top: 4px; }
+  .hp { position: absolute; left: -9999px; }
+  .agree { margin-top: 16px; font-size: 14px; }
+  .submit { width: 100%; background: var(--accent); color: #fff; border: 0; border-radius: 12px; font-size: 18px; font-weight: 700; padding: 16px; margin-top: 18px; cursor: pointer; }
+  .submit:disabled { opacity: .6; cursor: wait; }
+  .policy { font-size: 12px; color: var(--sub); }
+  .policy summary { cursor: pointer; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -2px 10px rgba(0,0,0,.06); z-index: 10; }
+  .bar-in { max-width: 720px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .bar .label { font-size: 12px; color: var(--sub); }
+  .bar .total { font-size: 24px; font-weight: 800; color: var(--main); }
+  .bar .total small { font-size: 13px; font-weight: 400; color: var(--sub); }
+  .bar a { background: var(--main); color: #fff; text-decoration: none; border-radius: 10px; padding: 10px 16px; font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .done { text-align: center; padding: 40px 20px; }
+  .done .id { font-size: 22px; font-weight: 800; color: var(--main); margin: 10px 0; }
+  footer { text-align: center; font-size: 12px; color: var(--sub); padding: 10px 16px 20px; }
+  @media (max-width: 420px) { .row2 { grid-template-columns: 1fr; } .item .name { font-size: 14px; } }
+</style>
+</head>
+<body>
+<header>
+  <span class="badge">税込・出張費込み／お見積り無料</span>
+  <h1>ハウスクリーニング ご予約フォーム</h1>
+  <p>メニューを選ぶと、その場で概算金額がわかります。</p>
+  <div class="points"><span>✔ 年中無休</span><span>✔ 追加料金は作業前に必ずご説明</span><span>✔ カード・電子マネー可</span></div>
+</header>
+
+<main id="app">
+  <form id="form" novalidate>
+    <section class="card">
+      <h2><span class="num">1</span>ご依頼内容を選ぶ</h2>
+      <div class="tabs" id="tabs"></div>
+      <div id="items"></div>
+      <div class="selected" id="selected"></div>
+      <p class="hint">「〜」が付いたメニューは最低料金です。機種・広さ・汚れの状態により、当日確認のうえご案内します。</p>
+      <div class="err" id="err-items"></div>
+    </section>
+
+    <section class="card" id="info">
+      <h2><span class="num">2</span>お客様情報</h2>
+      <label class="f">お名前<span class="req">必須</span></label>
+      <input type="text" name="name" autocomplete="name" placeholder="山田 花子">
+      <label class="f">フリガナ<span class="opt">任意</span></label>
+      <input type="text" name="kana" placeholder="ヤマダ ハナコ">
+      <div class="row2">
+        <div><label class="f">電話番号<span class="req">必須</span></label><input type="tel" name="tel" autocomplete="tel" placeholder="090-1234-5678"></div>
+        <div><label class="f">メールアドレス<span class="req">必須</span></label><input type="email" name="email" autocomplete="email" placeholder="example@mail.com"></div>
+      </div>
+      <p class="hint">ご予約確認メールをお送りします。</p>
+
+      <div class="row2">
+        <div><label class="f">郵便番号<span class="opt">任意</span></label><input type="text" name="zip" inputmode="numeric" autocomplete="postal-code" placeholder="1234567"></div>
+        <div><label class="f">都道府県<span class="req">必須</span></label>
+          <select name="pref"><option value="">選択してください</option><option>東京都</option><option>神奈川県</option><option>埼玉県</option><option>千葉県</option><option>その他</option></select></div>
+      </div>
+      <label class="f">市区町村<span class="req">必須</span></label>
+      <input type="text" name="city" placeholder="例：練馬区、小平市">
+      <label class="f">番地・建物名・部屋番号<span class="opt">任意</span></label>
+      <input type="text" name="address" autocomplete="address-line1" placeholder="例：豊玉南1-2-3 〇〇マンション101">
+
+      <div class="row2">
+        <div><label class="f">お住まいのタイプ<span class="opt">任意</span></label>
+          <select name="home"><option value="">選択してください</option><option>戸建て</option><option>マンション・アパート</option><option>空室・退去後</option><option>店舗・事務所</option></select></div>
+        <div><label class="f">間取り<span class="opt">任意</span></label>
+          <select name="layout"><option value="">選択してください</option><option>1R・1K</option><option>1DK・1LDK</option><option>2K〜2LDK</option><option>3K〜3LDK</option><option>4LDK以上</option><option>わからない</option></select></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">3</span>ご希望日時</h2>
+      <p class="hint" style="margin-top:0">第1希望だけでもお申し込みいただけます。日程は担当者からのご連絡で確定します。</p>
+      <div id="dates"></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">4</span>その他</h2>
+      <label class="f">お支払い方法<span class="opt">任意</span></label>
+      <div class="chips" id="payment"></div>
+      <label class="f">駐車場<span class="opt">任意</span></label>
+      <div class="chips" id="parking"></div>
+      <p class="hint">コインパーキング利用時は実費をご負担いただきます。</p>
+
+      <label class="f">当店を何で知りましたか？<span class="req">必須</span></label>
+      <select name="source">
+        <option value="">選択してください</option>
+        <option>Google検索</option><option>Googleマップ</option><option>Instagram</option><option>LINE</option>
+        <option>チラシ・ポスティング</option><option>ご家族・知人の紹介</option><option>以前利用した</option>
+        <option>おそうじ合衆国</option><option>くらしのマーケット</option><option>ジモティー</option><option>不動産会社・管理会社</option><option>その他</option>
+      </select>
+      <label class="f">紹介コード<span class="opt">任意</span></label>
+      <input type="text" name="referral" placeholder="ご紹介を受けた方はご入力ください">
+      <label class="f">ご要望・備考<span class="opt">任意</span></label>
+      <textarea name="note" placeholder="例：エアコンの型番、気になる汚れ、ペットの有無など"></textarea>
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <details class="policy">
+        <summary>キャンセルポリシー・注意事項</summary>
+        <p>・3営業日前まで無料／2営業日前・前日 50％／当日・ご連絡なし 100％（天災・弊社都合の延期は無料）<br>
+        ・作業時は電気・水道・ガスを使用します。<br>・貴重品・割れ物は事前にお片付けをお願いします。<br>
+        ・在宅清掃の場合は作業中のご在宅をお願いします。<br>
+        ・ご入力いただいた個人情報は、ご予約の対応とサービス向上のためにのみ利用します。</p>
+      </details>
+      <label class="agree"><input type="checkbox" name="agree"> キャンセルポリシーと個人情報の取り扱いに同意する</label>
+      <div class="err" id="err-form"></div>
+      <button class="submit" type="submit" id="submit">この内容で予約する</button>
+      <p class="hint" style="text-align:center">送信後すぐに確認メールが届きます。</p>
+    </section>
+  </form>
+</main>
+
+<div class="bar" id="bar">
+  <div class="bar-in">
+    <div><div class="label">概算金額（税込・出張費込み）</div><div class="total" id="total">¥0 <small></small></div></div>
+    <a href="#info">予約へ進む</a>
+  </div>
+</div>
+<footer><span id="store"></span>（<span id="company"></span>）　TEL <span id="tel"></span></footer>
+
+<script src="config.js"></script>
+<script>
+// ===== 設定は config.js（お店ごとに書き換えるのはそちらだけ） =====
+const CFG = window.SITE_CONFIG || {};
+const GAS_URL = CFG.COMPANY_GAS_URL || '';
+const SHOP_TEL = CFG.TEL || '';
+
+// 料金マスタ（GASのシートから読み込めなかったときの予備。シートの「料金マスタ」を変えるとそちらが優先されます）
+const DEFAULT_CATALOG = [
+  ['ac','エアコン・空調','エアコン（通常壁掛け）',9980,'台',false,'約1〜1.5時間'],
+  ['ac_auto','エアコン・空調','エアコン（お掃除機能付き）',18700,'台',false,'約1.5〜2時間'],
+  ['ac_set3','エアコン・空調','おまとめ3点セット',7000,'台',false,'室外機＋ドレンホース＋抗菌コート（別々なら9,000円）'],
+  ['ac_set2','エアコン・空調','おまとめ2点セット',5000,'台',false,'室外機・ドレンホース・抗菌コートから2点'],
+  ['ac_outdoor','エアコン・空調','エアコン室外機',4000,'台',false,'約30〜45分'],
+  ['ac_drain','エアコン・空調','ドレンホース洗浄',2500,'台',false,''],
+  ['ac_coat','エアコン・空調','防カビ・抗菌コート',2500,'台',false,'エアコンと同時施工'],
+  ['bath_dryer','エアコン・空調','浴室乾燥機',11000,'台',false,'約45分〜1時間'],
+  ['fan','エアコン・空調','換気扇（浴室・トイレ・洗面など）',3850,'台',false,'約20〜30分'],
+  ['kitchen','水回り','キッチン',16000,'式',false,'約1.5時間'],
+  ['hood','水回り','レンジフード',16000,'台',false,'約1.5時間'],
+  ['propeller','水回り','換気扇（フード無しプロペラ）',9900,'台',false,''],
+  ['bath','水回り','浴室（通常）',16000,'式',false,'約2時間'],
+  ['bath_unit','水回り','浴室（ユニットバス）',21000,'式',false,'約2時間'],
+  ['bath_unit_sink','水回り','浴室（ユニットバス・洗面付き）',25000,'式',false,'約2時間'],
+  ['bath_apron','水回り','浴室エプロン内部',3080,'式',false,'約1〜1.5時間'],
+  ['toilet','水回り','トイレ',9000,'式',false,'約1時間'],
+  ['washroom','水回り','洗面所',8250,'式',false,'約1時間'],
+  ['washer','水回り','洗濯機',17600,'台',true,'機種により異なります'],
+  ['dishwasher','水回り','食洗器内部',7700,'台',false,'約1〜1.5時間'],
+  ['fridge','水回り','冷蔵庫',9900,'台',true,'約1〜2時間'],
+  ['floor','床・空間','フローリング清掃',330,'㎡',true,'10㎡（1部屋）で約1〜1.5時間'],
+  ['wax','床・空間','ワックス（剥離・塗布）',605,'㎡',true,'下地処理含む'],
+  ['veranda_s','床・空間','ベランダ（10㎡未満）',7700,'式',true,'約1時間'],
+  ['veranda_m','床・空間','ベランダ（10〜20㎡）',15400,'式',false,''],
+  ['veranda_l','床・空間','ベランダ（20㎡以上）',23100,'式',false,''],
+  ['window','床・空間','窓',3850,'枚',false,'ベランダと同時施工'],
+  ['vacant','床・空間','空室清掃',24750,'式',true,'25㎡目安で約3〜5時間'],
+  ['whole','床・空間','在宅丸ごと清掃',90750,'式',true,'2名・約3〜4時間'],
+].map(r => ({ id: r[0], category: r[1], name: r[2], price: r[3], unit: r[4], from: r[5], note: r[6] }));
+
+// ===== 画面の組み立て =====
+let catalog = DEFAULT_CATALOG;
+const qty = {};
+let activeTab = '';
+const $ = s => document.querySelector(s);
+const yen = n => '¥' + n.toLocaleString('ja-JP');
+const form = $('#form');
+$('#tel').textContent = SHOP_TEL;
+$('#store').textContent = CFG.STORE_NAME || '';
+$('#company').textContent = CFG.COMPANY_NAME || '';
+if (CFG.STORE_NAME) document.title = `ハウスクリーニング ご予約フォーム｜${CFG.STORE_NAME}`;
+
+function categories() { return [...new Set(catalog.map(i => i.category))]; }
+
+function renderTabs() {
+  $('#tabs').innerHTML = categories().map(c => {
+    const n = catalog.filter(i => i.category === c && qty[i.id] > 0).length;
+    return `<button type="button" class="${c === activeTab ? 'on' : ''}" data-cat="${c}">${c}${n ? `<span class="cnt">${n}</span>` : ''}</button>`;
+  }).join('');
+}
+
+function renderItems() {
+  $('#items').innerHTML = catalog.filter(i => i.category === activeTab).map(i => `
+    <div class="item">
+      <div>
+        <div class="name">${i.name}</div>
+        <div class="price">${yen(i.price)}${i.from ? '〜' : ''}<span style="font-weight:400;color:var(--sub)">／${i.unit}</span></div>
+        ${i.note ? `<div class="note">${i.note}</div>` : ''}
+      </div>
+      <div class="stepper">
+        <button type="button" data-id="${i.id}" data-d="-1" aria-label="${i.name}を減らす">−</button>
+        <input type="number" min="0" max="999" inputmode="numeric" value="${qty[i.id] || 0}" data-id="${i.id}" aria-label="${i.name}の数量">
+        <button type="button" class="plus" data-id="${i.id}" data-d="${i.unit === '㎡' ? 5 : 1}" aria-label="${i.name}を増やす" ${(qty[i.id] || 0) >= capOf(i.id) ? 'disabled' : ''}>＋</button>
+      </div>
+    </div>`).join('') + (activeTab === 'エアコン・空調' ? `<p class="hint">※室外機・ドレンホース・抗菌コート・おまとめセットは、エアコンの台数分までお選びいただけます（現在 ${acUnits()}台）。</p>` : '');
+}
+
+function update() {
+  const chosen = catalog.filter(i => qty[i.id] > 0);
+  const total = chosen.reduce((s, i) => s + i.price * qty[i.id], 0);
+  const from = chosen.some(i => i.from);
+  $('#total').innerHTML = `${yen(total)}${from ? '〜' : ''} <small>${chosen.length ? chosen.length + 'メニュー' : ''}</small>`;
+  $('#selected').innerHTML = chosen.length
+    ? '<b>選択中：</b>' + chosen.map(i => `${i.name} ×${qty[i.id]}${i.unit}`).join('、') : '';
+  renderTabs();
+}
+
+$('#tabs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  activeTab = b.dataset.cat; renderTabs(); renderItems();
+});
+// エアコンのオプションは「エアコンの台数まで」（台数分お選びください）
+const AC_UNITS = ['ac', 'ac_auto'];
+const AC_OPTS = ['ac_set3', 'ac_set2', 'ac_outdoor', 'ac_drain', 'ac_coat'];
+const acUnits = () => AC_UNITS.reduce((s, id) => s + (qty[id] || 0), 0);
+const capOf = id => (AC_OPTS.includes(id) ? acUnits() : 999);
+function clampOptions() { AC_OPTS.forEach(id => { if ((qty[id] || 0) > acUnits()) qty[id] = acUnits(); }); }
+
+$('#items').addEventListener('click', e => {
+  const b = e.target.closest('button[data-d]'); if (!b) return;
+  const id = b.dataset.id;
+  qty[id] = Math.max(0, Math.min(capOf(id), (qty[id] || 0) + Number(b.dataset.d)));
+  clampOptions();
+  renderItems();
+  update();
+});
+$('#items').addEventListener('change', e => {
+  if (!e.target.dataset.id) return;
+  const id = e.target.dataset.id;
+  qty[id] = Math.max(0, Math.min(capOf(id), Math.floor(Number(e.target.value) || 0)));
+  clampOptions();
+  renderItems();
+  update();
+});
+
+// 希望日（最短は2日後）
+const minDate = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
+const times = ['9時〜12時', '12時〜15時', '15時〜18時', '時間指定なし', 'その他（備考に記入）'];
+$('#dates').innerHTML = [1, 2, 3].map(n => `
+  <div class="row2">
+    <div><label class="f">第${n}希望日${n === 1 ? '<span class="req">必須</span>' : '<span class="opt">任意</span>'}</label>
+      <input type="date" name="date${n}" min="${minDate}"></div>
+    <div><label class="f">時間帯</label>
+      <select name="time${n}">${times.map(t => `<option>${t}</option>`).join('')}</select></div>
+  </div>`).join('');
+
+const chips = (el, name, list) => { $(el).innerHTML = list.map((v, i) => `<label><input type="radio" name="${name}" value="${v}" ${i === 0 ? 'checked' : ''}>${v}</label>`).join(''); };
+chips('#payment', 'payment', ['現金', 'クレジットカード', '電子マネー・QR決済', '請求書（法人様）']);
+chips('#parking', 'parking', ['敷地内に駐車可', '近隣コインパーキング', 'わからない・相談したい']);
+
+// ===== 経路（どこから来た予約か）：URLから自動で入れる。お客様には入力させない =====
+//   ?ref=紹介コード（90日このブラウザに保存） ?utm_source= ?utm_medium= ?utm_campaign=（広告・チラシQRなど）
+//   storeCode は config.js の STORE_CODE
+const code = (s, max = 40) => String(s || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, max);
+const params = new URLSearchParams(location.search);
+const store = {
+  get(k) { try { const v = JSON.parse(localStorage.getItem(k)); return v && v.exp > Date.now() ? v.val : ''; } catch (e) { return ''; } },
+  set(k, val, days) { try { localStorage.setItem(k, JSON.stringify({ val, exp: Date.now() + days * 864e5 })); } catch (e) {} },
+};
+if (code(params.get('ref'))) store.set('zc_ref', code(params.get('ref')), 90);
+['utm_source', 'utm_medium', 'utm_campaign'].forEach(k => { if (code(params.get(k))) store.set('zc_' + k, code(params.get(k)), 30); });
+const route = () => ({
+  ref: store.get('zc_ref'),
+  utm_source: store.get('zc_utm_source'), utm_medium: store.get('zc_utm_medium'), utm_campaign: store.get('zc_utm_campaign'),
+  storeCode: code(CFG.STORE_CODE, 20),
+});
+if (route().ref) form.referral.value = route().ref;
+// 二重送信防止：このページで1回の予約につき1つの番号（同じ番号の送信はGAS側で1件にまとめる）
+const requestId = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random()).replace(/[^A-Za-z0-9-]/g, '');
+
+// ===== 送信 =====
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  $('#err-items').textContent = ''; $('#err-form').textContent = '';
+  const f = Object.fromEntries(new FormData(form));
+  const items = Object.entries(qty).filter(([, n]) => n > 0).map(([id, n]) => ({ id, qty: n }));
+  const missing = [];
+  if (!items.length) { $('#err-items').textContent = 'ご依頼内容を1つ以上選んでください'; }
+  [['name', 'お名前'], ['tel', '電話番号'], ['email', 'メールアドレス'], ['pref', '都道府県'], ['city', '市区町村'], ['date1', '第1希望日'], ['source', '当店を何で知ったか']]
+    .forEach(([k, label]) => { if (!String(f[k] || '').trim()) missing.push(label); });
+  if (f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) missing.push('メールアドレスの形式');
+  if (f.tel && String(f.tel).replace(/\D/g, '').length < 10) missing.push('電話番号の桁数');
+  if (!f.agree) missing.push('キャンセルポリシーへの同意');
+  if (missing.length || !items.length) {
+    if (missing.length) $('#err-form').textContent = '次の項目を確認してください：' + missing.join('、');
+    (items.length ? $('#err-form') : $('#err-items')).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  ['date2', 'date3'].forEach((k, i) => { if (!f[k]) f['time' + (i + 2)] = ''; });
+
+  const payload = Object.assign(f, { type: 'booking', items, requestId }, route());
+  payload.referral = code(payload.referral);
+  delete payload.agree;
+
+  const btn = $('#submit'); btn.disabled = true; btn.textContent = '送信中…';
+  try {
+    let res;
+    if (!GAS_URL) {
+      console.log('お試しモード：送信内容', payload);
+      res = { ok: true, bookingId: 'お試し-000' };
+    } else {
+      // text/plain で送るとブラウザの事前確認(CORS)が不要になり、GASで受け取れる
+      const r = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+      res = await r.json();
+    }
+    if (!res.ok) throw new Error(res.error || '送信に失敗しました');
+    const total = $('#total').textContent;
+    $('#app').innerHTML = `<div class="card done">
+      <div style="font-size:40px">✅</div><h2 style="justify-content:center">ご予約を受け付けました</h2>
+      <div>予約番号</div><div class="id">${res.bookingId}</div>
+      <p>概算金額：${total}</p>
+      <p>確認メールを <b>${f.email.replace(/</g, '&lt;')}</b> にお送りしました。<br>日程は担当者よりご連絡のうえ確定します。</p>
+      <p class="hint">メールが届かない場合は迷惑メールフォルダをご確認いただくか、お電話（${SHOP_TEL}）でお問い合わせください。</p></div>`;
+    $('#bar').remove();
+    scrollTo(0, 0);
+  } catch (err) {
+    $('#err-form').textContent = err.message + '。時間をおいて再度お試しいただくか、お電話でご連絡ください。';
+    btn.disabled = false; btn.textContent = 'この内容で予約する';
+  }
+});
+
+// ===== 料金の読み込み =====
+function start() { activeTab = categories()[0]; renderTabs(); renderItems(); update(); }
+start();
+if (GAS_URL) {
+  fetch(GAS_URL + '?action=catalog').then(r => r.json()).then(d => {
+    if (d.ok && d.items && d.items.length) { catalog = d.items; start(); }
+  }).catch(() => {});
+}
+</script>
+</body>
+</html>
